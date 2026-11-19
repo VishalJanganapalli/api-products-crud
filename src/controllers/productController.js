@@ -29,11 +29,9 @@ exports.getProducts = async (req, res, next) => {
       displayBadge,
       deliveryType,
       status,
-      // Sorting & Pagination
+      // Sorting
       sortBy = 'createdAt',
-      order = 'desc',
-      page = 1,
-      limit = 10
+      order = 'desc'
     } = req.query;
 
     const filter = {};
@@ -134,34 +132,14 @@ exports.getProducts = async (req, res, next) => {
     const sortDirection = order.toLowerCase() === 'asc' ? 1 : -1;
     const sortOptions = { [sortField]: sortDirection };
 
-    // Pagination
-    const pageNum = Math.max(1, parseInt(page, 10) || 1);
-    const limitNum = Math.min(100, Math.max(1, parseInt(limit, 10) || 10));
-    const skip = (pageNum - 1) * limitNum;
-
-    // Execute Query
-    const [products, total] = await Promise.all([
-      Product.find(filter)
-        .sort(sortOptions)
-        .skip(skip)
-        .limit(limitNum)
-        .lean(),
-      Product.countDocuments(filter)
-    ]);
-
-    const totalPages = Math.ceil(total / limitNum);
+    // Execute Query (without pagination - returns all matching records)
+    const products = await Product.find(filter)
+      .sort(sortOptions)
+      .lean();
 
     return res.status(200).json({
       success: true,
       count: products.length,
-      total,
-      pagination: {
-        page: pageNum,
-        limit: limitNum,
-        totalPages,
-        hasNextPage: pageNum < totalPages,
-        hasPrevPage: pageNum > 1
-      },
       filtersApplied: {
         search: search || null,
         category: category || null,

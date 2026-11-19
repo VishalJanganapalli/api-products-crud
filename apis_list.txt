@@ -1,0 +1,199 @@
+================================================================================
+PRODUCTS CRUD API - ENDPOINTS, PAYLOADS & REQUIRED FIELDS
+BASE URL: https://api-products-crud-b1t1.onrender.com
+================================================================================
+
+--------------------------------------------------------------------------------
+1. GET - FETCH ALL PRODUCTS OR SINGLE PRODUCT
+--------------------------------------------------------------------------------
+Method: GET
+URL (All Products):    https://api-products-crud-b1t1.onrender.com/api/products
+URL (Single Product):  https://api-products-crud-b1t1.onrender.com/api/products/:id
+
+Headers:
+  Accept: application/json
+
+Request Payload / Body:
+  NONE (No body needed. Pass filters or product ID via URL)
+
+Note:
+  Pagination has been removed. All matching products are returned directly.
+
+Query Filter Example:
+  https://api-products-crud-b1t1.onrender.com/api/products?category=Electronics&minPrice=100&isOnSale=true
+
+
+--------------------------------------------------------------------------------
+2. POST - CREATE A NEW PRODUCT
+--------------------------------------------------------------------------------
+Method: POST
+URL:    https://api-products-crud-b1t1.onrender.com/api/products
+
+Headers:
+  Content-Type: application/json
+
+=======================================================
+REQUIRED FIELDS (MUST BE SENT IN POST REQUEST):
+=======================================================
+1. "name"          (String, required) - Product title (e.g., "Smart Fitness Band Pro")
+2. "sku"           (String, required) - Unique SKU code (e.g., "FIT-BAND-001")
+3. "description"   (String, required) - Detailed product description
+4. "price"         (Number, required) - Positive selling price (e.g., 49.99)
+5. "category"      (String, required) - Category name (e.g., "Wearables")
+6. "brand"         (String, required) - Brand / Manufacturer (e.g., "NovaFit")
+7. "stockQuantity" (Number, required) - Stock count, 0 or higher (e.g., 35)
+8. "thumbnail"     (String, required) - Direct URL for primary product image
+
+OPTIONAL FIELDS (WITH AUTOMATIC DEFAULTS):
+- "shortDescription"        (String, default: "")
+- "compareAtPrice"          (Number, default: null - original price before discount)
+- "discountPercentage"      (Number, auto-calculated if compareAtPrice is given)
+- "images"                  (Array of strings, default: [])
+- "tags"                    (Array of strings, default: [])
+- "dimensions"              (Object: { length, width, height, unit }, default: cm)
+- "weight"                  (Object: { value, unit }, default: kg)
+- "isFeatured"              (Boolean, default: false)
+- "isNewArrival"            (Boolean, default: false)
+- "isOnSale"                (Boolean, default: false / auto-set if compareAtPrice > price)
+- "isBestSeller"            (Boolean, default: false)
+- "isLimitedEdition"        (Boolean, default: false)
+- "hasFreeShipping"         (Boolean, default: false)
+- "requiresAgeVerification" (Boolean, default: false)
+- "allowCustomerReviews"    (Boolean, default: true)
+- "canReturn"               (Boolean, default: true)
+- "displayBadge"            (String, default: "NONE" - NONE, NEW, HOT, SALE, LIMITED, BESTSELLER, CLEARANCE)
+- "deliveryType"            (String, default: "STANDARD" - STANDARD, EXPRESS, SAME_DAY, DIGITAL_DOWNLOAD)
+- "status"                  (String, default: "active" - active, draft, archived)
+
+-------------------------------------------------------
+A) MINIMAL PAYLOAD (ONLY REQUIRED FIELDS):
+-------------------------------------------------------
+{
+  "name": "Smart Fitness Band Pro",
+  "sku": "FIT-BAND-001",
+  "description": "Lightweight fitness tracker with AMOLED display and heart rate monitor.",
+  "price": 49.99,
+  "category": "Wearables",
+  "brand": "NovaFit",
+  "stockQuantity": 35,
+  "thumbnail": "https://images.unsplash.com/photo-1575311373937-040b8e1fd5b6?w=400"
+}
+
+-------------------------------------------------------
+B) FULL PAYLOAD (WITH ALL CONDITIONAL RENDERING KEYS):
+-------------------------------------------------------
+{
+  "name": "Smart Fitness Band Pro",
+  "sku": "FIT-BAND-001",
+  "description": "Lightweight fitness tracker with AMOLED display, heart rate monitor, and 14-day battery life.",
+  "shortDescription": "AMOLED fitness tracker with 14-day battery.",
+  "price": 49.99,
+  "compareAtPrice": 69.99,
+  "category": "Wearables",
+  "brand": "NovaFit",
+  "stockQuantity": 35,
+  "thumbnail": "https://images.unsplash.com/photo-1575311373937-040b8e1fd5b6?w=400",
+  "images": [
+    "https://images.unsplash.com/photo-1575311373937-040b8e1fd5b6?w=800"
+  ],
+  "tags": ["fitness", "tracker", "smartwatch", "wearables"],
+  "dimensions": { "length": 4.5, "width": 2.0, "height": 1.1, "unit": "cm" },
+  "weight": { "value": 0.035, "unit": "kg" },
+  "isFeatured": true,
+  "isNewArrival": true,
+  "hasFreeShipping": true,
+  "displayBadge": "NEW",
+  "deliveryType": "EXPRESS"
+}
+
+
+--------------------------------------------------------------------------------
+3. PUT - FULL REPLACE OF AN EXISTING PRODUCT
+--------------------------------------------------------------------------------
+Method: PUT
+URL:    https://api-products-crud-b1t1.onrender.com/api/products/:id
+Note:   Requires all mandatory fields because it replaces the whole product.
+
+Headers:
+  Content-Type: application/json
+
+Request Payload / Body:
+{
+  "name": "Smart Fitness Band Pro V2",
+  "sku": "FIT-BAND-001",
+  "description": "Upgraded fitness band with built-in GPS and SpO2 sensor.",
+  "shortDescription": "GPS fitness band with 14-day battery life.",
+  "price": 59.99,
+  "compareAtPrice": 79.99,
+  "category": "Wearables",
+  "brand": "NovaFit",
+  "stockQuantity": 50,
+  "thumbnail": "https://images.unsplash.com/photo-1575311373937-040b8e1fd5b6?w=400",
+  "images": [
+    "https://images.unsplash.com/photo-1575311373937-040b8e1fd5b6?w=800"
+  ],
+  "tags": ["fitness", "gps", "v2"],
+  "isFeatured": true,
+  "hasFreeShipping": true,
+  "displayBadge": "HOT"
+}
+
+
+--------------------------------------------------------------------------------
+4. PATCH - PARTIAL UPDATE (UPDATE SPECIFIC FIELDS)
+--------------------------------------------------------------------------------
+Method: PATCH
+URL:    https://api-products-crud-b1t1.onrender.com/api/products/:id
+Note:   Send only the field(s) you want to modify (no required fields, everything optional).
+
+Headers:
+  Content-Type: application/json
+
+Request Payload / Body:
+{
+  "price": 39.99,
+  "isFeatured": true,
+  "displayBadge": "SALE"
+}
+
+
+--------------------------------------------------------------------------------
+5. DELETE - DELETE A PRODUCT
+--------------------------------------------------------------------------------
+Method: DELETE
+URL:    https://api-products-crud-b1t1.onrender.com/api/products/:id
+
+Headers:
+  Accept: application/json
+
+Request Payload / Body:
+  NONE (No body needed. Pass the product ID directly in the URL)
+
+
+================================================================================
+ADDITIONAL ENDPOINTS & FILTRATION REFERENCE
+================================================================================
+
+1. METADATA & HEALTH CHECK
+  GET  https://api-products-crud-b1t1.onrender.com/api/health
+  GET  https://api-products-crud-b1t1.onrender.com/api/products/meta/summary
+
+2. AVAILABLE QUERY FILTERS (FOR GET /api/products)
+  ?search=keyword                 (Search across name, description, brand, sku, tags)
+  ?category=Electronics           (Category filter)
+  ?brand=AeroPulse                (Brand filter)
+  ?minPrice=50&maxPrice=500       (Price range filter)
+  ?minRating=4.5                  (Minimum rating filter)
+  ?inStock=true                   (In-stock items only: true / false)
+  ?stockStatus=IN_STOCK           (IN_STOCK | LOW_STOCK | OUT_OF_STOCK | PRE_ORDER | DISCONTINUED)
+  ?tags=wireless,gaming           (Comma-separated tags)
+  ?isFeatured=true                (Featured hero items: true / false)
+  ?isNewArrival=true              (New arrival items: true / false)
+  ?isOnSale=true                  (On-sale items: true / false)
+  ?isBestSeller=true              (Best seller items: true / false)
+  ?hasFreeShipping=true           (Free shipping items: true / false)
+  ?requiresAgeVerification=true   (18+ age restricted items: true / false)
+  ?displayBadge=BESTSELLER        (NONE | NEW | HOT | SALE | LIMITED | BESTSELLER | CLEARANCE)
+  ?deliveryType=EXPRESS           (STANDARD | EXPRESS | SAME_DAY | DIGITAL_DOWNLOAD)
+  ?sortBy=price&order=asc         (Sort by: price | rating | name | createdAt | stockQuantity)
+================================================================================

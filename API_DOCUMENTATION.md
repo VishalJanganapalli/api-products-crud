@@ -195,8 +195,6 @@ Use query parameters on `GET /api/products`:
 | `deliveryType` | String | `?deliveryType=SAME_DAY` | Filter by delivery method |
 | `sortBy` | String | `?sortBy=price` | Sort by: `price`, `rating`, `name`, `createdAt`, `stockQuantity` |
 | `order` | String | `?order=asc` | `asc` (ascending) or `desc` (descending, default) |
-| `page` | Integer | `?page=2` | Page number (default: 1) |
-| `limit` | Integer | `?limit=10` | Products per page (default: 10, max: 100) |
 
 ---
 
@@ -223,14 +221,6 @@ curl "http://localhost:5000/api/products?category=Electronics&isOnSale=true&page
 {
   "success": true,
   "count": 2,
-  "total": 4,
-  "pagination": {
-    "page": 1,
-    "limit": 2,
-    "totalPages": 2,
-    "hasNextPage": true,
-    "hasPrevPage": false
-  },
   "filtersApplied": {
     "search": null,
     "category": "Electronics",
