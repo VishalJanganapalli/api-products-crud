@@ -1,0 +1,33 @@
+{
+  "name": "products-crud-api",
+  "version": "1.0.0",
+  "description": "RESTful CRUD API for Products with filtration, pagination, and frontend conditional rendering keys using Node.js, Express, and MongoDB Atlas",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "seed": "node src/seeds/seed.js"
+  },
+  "keywords": [
+    "express",
+    "nodejs",
+    "mongodb",
+    "mongoose",
+    "crud",
+    "rest-api",
+    "atlas",
+    "filtration"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "mongoose": "^8.10.1",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
